@@ -5,62 +5,67 @@ import {
   Query,
   Post,
   Body,
-  Put,
+  Patch,
   Delete,
-  HttpStatus,
-  HttpCode,
-  Res,
+  // HttpStatus,
+  // HttpCode,
+  // Res,
 } from '@nestjs/common';
+
+import { ProductsService } from '../services/products.service';
+import { ParseIntPipe } from '@nestjs/common';
 
 @Controller('products') //Route
 export class ProductsController {
-  //las rutas no dinamicas van primeras, para que no se confunda con las dinamicas
+  //private para dejar esta inyeccion como atributo de la misma clase
+  constructor(private ProductsService: ProductsService){}
+
   @Get()
   getProducts(
-    @Query('limit') limit = 100, //si ya le asigno un valor por defecto, no es necesario poner el tipado
+    @Query('limit') limit = 100,
     @Query('offset') offset = 0,
-    @Query('brand') brand: string, //brand es marca
+    @Query('brand') brand: string,
   ) {
-    return {
-      message: `product, limit: ${limit}, offset: ${offset}, brand: ${brand}`,
-    };
+    // return {
+    //   message: `product, limit: ${limit}, offset: ${offset}, brand: ${brand}`,
+    // };
+    return this.ProductsService.findAll();
   }
-  @Get('filter')
-  getProductFilter() {
-    return `yo soy un filter`;
-  }
+
   @Get(':productId')
   // @HttpCode(HttpStatus.OK)
-  getProduct(@Param('productId') productId: number) {
-    return {
-      message: `product ${productId}`,
-    };
+  getOne(@Param('productId', ParseIntPipe) productId: number) {
+    // return {
+    //   message: `product ${productId}`,
+    // };
+    return this.ProductsService.findOne(productId);
   }
-  // @Post()
-  // createProduct() {
-  //   return {
-  //     message: 'Product created',
-  //   };
-  // }
   @Post()
   create(@Body() payload: any) {
-    //en @Body('price') , se puede poner cada atributo, pero no es eficiente en caso de muchos atributos
-    return {
-      message: 'Product created',
-      payload,
-    };
+    // return {
+    //   message: 'Product created',
+    //   payload,
+    // };
+    return this.ProductsService.create(payload);
   }
-  @Put(':id')
+  @Patch(':id')
   update(@Param('id') id: number, @Body() payload: any) {
-    return {
-      id,
-      payload,
-    };
+    // return {
+    //   id,
+    //   payload,
+    // };
+    return this.ProductsService.update(+id, payload);
   }
   @Delete(':id')
   delete(@Param('id') id: number) {
-    return {
-      id,
-    };
+    // return {
+    //   id,
+    // };
+    return this.ProductsService.delete(+id);
+  }
+
+  @Get('filter')
+  getProductFilter() {
+    return `yo soy un filter`;
   }
 }
