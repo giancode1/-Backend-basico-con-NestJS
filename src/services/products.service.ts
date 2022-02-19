@@ -20,7 +20,7 @@ export class ProductsService {
   }
 
   findOne(id: number) {
-    const product = this.products.find((product) => product.id === id);
+    const product = this.products.find((p) => p.id === id);
     //error first
     if (!product) {
       // return null;
