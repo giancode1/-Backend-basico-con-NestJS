@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '../entities/product.entity';
+import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -29,7 +30,8 @@ export class ProductsService {
     return product;
   }
 
-  create(payload: any) {
+  create(payload: CreateProductDto) {
+    //payload.name = 'asd'; //no puedo modificar el nombre //ayuda a no cometer errores en el desarrollo
     const newProduct = {
       id: this.counterId++,
       ...payload,
@@ -38,8 +40,7 @@ export class ProductsService {
     return newProduct;
   }
 
-  update(id: number, payload: any) {
-    // console.log("me llego el id: ", id, typeof id);
+  update(id: number, payload: UpdateProductDto) {
     const product = this.findOne(id);
     if (product) {
       Object.assign(product, payload);

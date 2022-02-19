@@ -7,19 +7,17 @@ import {
   Body,
   Patch,
   Delete,
-  // HttpStatus,
-  // HttpCode,
-  // Res,
-  ParseIntPipe
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { ProductsService } from '../services/products.service';
 import { MyParseIntPipe } from '../common/parse-int.pipe';
+import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
 
 @Controller('products') //Route
 export class ProductsController {
   //private para dejar esta inyeccion como atributo de la misma clase
-  constructor(private ProductsService: ProductsService){}
+  constructor(private ProductsService: ProductsService) {}
 
   @Get()
   getProducts(
@@ -31,18 +29,20 @@ export class ProductsController {
   }
 
   @Get(':productId')
-  // @HttpCode(HttpStatus.OK)
   getOne(@Param('productId', ParseIntPipe) productId: number) {
     return this.ProductsService.findOne(productId);
   }
 
   @Post()
-  create(@Body() payload: any) {
+  create(@Body() payload: CreateProductDto) {
     return this.ProductsService.create(payload);
   }
 
   @Patch(':id')
-  update(@Param('id', MyParseIntPipe) id: number, @Body() payload: any) {
+  update(
+    @Param('id', MyParseIntPipe) id: number,
+    @Body() payload: UpdateProductDto,
+  ) {
     return this.ProductsService.update(id, payload);
   }
 
